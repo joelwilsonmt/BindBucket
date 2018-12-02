@@ -1,16 +1,21 @@
 $( document ).ready(function() {
+  //create arrays of lat and longitude across world:
   var interval = .15 //about 10 miles in latitude
   var longitudeArray = [];
   var latitudeArray = [];
+
   var longStart = -180.0000;
   longitudeArray.push(longStart);
   var latStart = -90.0000;
+
+  //create lat array:
   latitudeArray.push(latStart);
-  while (longStart < 180) {
-    longStart = (longStart + interval);
+  while (longStart <= 180) {
+    longStart = (longStart + (interval*2));
     longitudeArray.push(longStart.toFixed(4));
   }
-  while (latStart < 90) {
+  //create long array:
+  while (latStart <= 90) {
     latStart = (latStart + interval);
     latitudeArray.push(latStart.toFixed(4));
   }
