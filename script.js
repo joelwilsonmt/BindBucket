@@ -72,7 +72,9 @@ function returnBucket(position) {
   $('#demo').append('user coord: ' + userpoint);
   $('#demo').append('<br>');
   var parcelPoint = '{"type": "FeatureCollection", "features": [{"type": "Feature","properties":{},"geometry": '+coords+'},{"type": "Feature","properties": {},"geometry": '+userpoint+'}]}';
-  $('#demo').append(parcelPoint);
+  $('#demo').append('copy the next line:<br>');
+  $('#demo').append(parcelPoint + '<br>');
+  $('#demo').append('<a target="_blank" href="http://geojson.io">And paste it here: GeoJSON</a>');
 }
 //$('#getPosition').click(function() {getPosition();});
 
