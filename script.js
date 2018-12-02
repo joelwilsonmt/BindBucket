@@ -7,9 +7,9 @@ $( document ).ready(function() {
   var longStart = -180.0000;
   longitudeArray.push(longStart);
   var latStart = -90.0000;
+  latitudeArray.push(latStart);
 
   //create lat array:
-  latitudeArray.push(latStart);
   while (longStart <= 180) {
     longStart = (longStart + (interval*2));
     longitudeArray.push(longStart.toFixed(4));
