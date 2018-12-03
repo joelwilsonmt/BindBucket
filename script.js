@@ -22,11 +22,12 @@ $( document ).ready(function() {
   //create array of north values:
   var north = [];
   var start = 0;
-  var quadraticEase = .001; //value to increment every loop run
+  var quadraticEase = .0000025; //value to increment every loop run
   while (start <= 90){
     north.push(start);
-    start += (interval - quadraticEase);
-
+    interval -= quadraticEase;
+    start += (interval);
+    if (interval <= 0) {break;}
   }
   //push last lat
   north.push(90);
