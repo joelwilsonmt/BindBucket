@@ -16,7 +16,7 @@ $( document ).ready(function() {
 
   //create lat array:
   while (longStart <= 180) {
-    longStart = (longStart + (interval*2));
+    longStart = (longStart + (interval));
     longitudeArray.push(longStart.toFixed(4));
   }
   //create long array:
@@ -25,7 +25,6 @@ $( document ).ready(function() {
     latitudeArray.push(latStart.toFixed(4));
   }
 
-  console.log("working");
   var userPosition = getPosition();
   function getPosition(){
     console.log("Checking navigator");
@@ -34,17 +33,15 @@ $( document ).ready(function() {
       }
       function successFunction(position) {
         console.log("Navigator success");
-        console.log(position.coords.latitude);
-        console.log(position.coords.longitude);
-        returnBucket(position);
-        return position;
+        returnParcel(position);
+        //return position;
       }
       function errorFunction(){
-          alert("Geocoder failed");
+        alert("Geocoder failed");
       }
 
   }
-  function returnBucket(position) {
+  function returnParcel(position) {
     var lat = position.coords.latitude;
     var long = position.coords.longitude;
     var latBounds = [];
@@ -58,12 +55,19 @@ $( document ).ready(function() {
         latBounds.push(latitudeArray[i-1]);
         break;
       }
+      //error if reach last value
+      else if (latitudeArray[i] >= 90){
+        console.log("cannot find latitude");
+      }
     }
     for (var i = 0; i < longitudeArray.length; i++) {
       if (longitudeArray[i] > long){
         longBounds.push(longitudeArray[i]);
         longBounds.push(longitudeArray[i-1]);
         break;
+      }
+      else if (longitudeArray[i] >= 180){
+        console.log("cannot find longitude");
       }
     }
     console.log(longBounds, latBounds);
@@ -72,14 +76,18 @@ $( document ).ready(function() {
     var upperRight = [longBounds[1],latBounds[1]]; //highest long, highest lat (northeast)
     var bottomRight = [longBounds[1],latBounds[0]]; //highest long, lowest lat (southeast)
     var bottomLeft = [longBounds[0],latBounds[0]]; //lowest long, lowest lat (southwest)
+
+    //I think the reason they require longitude first for GeoJSON Objects
+    //is because it is the X axis whereas latitude represents coordinates
+    //on the y axis (x,y)
     console.log(upperLeft, upperRight, bottomRight, bottomLeft);
-    var polyBucket = '{"type":"Polygon","coordinates": [[['+upperLeft + '], [' + upperRight+ '], [' +  bottomRight+ '], [' +  bottomLeft+'],['+upperLeft + ']]]}'; //must close polygon with upperleft
-    var userpoint = '{"type":"Point", "coordinates": ['+long+','+lat+']}';
-    $('#demo').text('Parcel: ' + polyBucket);
+    var polyParcel = '{"type":"Polygon","coordinates": [[['+upperLeft + '], [' + upperRight+ '], [' +  bottomRight+ '], [' +  bottomLeft+'],['+upperLeft + ']]]}'; //must close polygon with upperleft
+    var userPoint = '{"type":"Point", "coordinates": ['+long+','+lat+']}';
+    $('#demo').text('Parcel: ' + polyParcel);
     $('#demo').append('<br>');
-    $('#demo').append('user coord: ' + userpoint);
+    $('#demo').append('user coord: ' + userPoint);
     $('#demo').append('<br>');
-    var parcelObj = '{"type": "FeatureCollection", "features": [{"type": "Feature","properties":{},"geometry": '+polyBucket+'},{"type": "Feature","properties": {},"geometry": '+userpoint+'}]}';
+    var parcelObj = '{"type": "FeatureCollection", "features": [{"type": "Feature","properties":{},"geometry": '+polyParcel+'},{"type": "Feature","properties": {},"geometry": '+userPoint+'}]}';
     $('#demo').append('copy the next line:<br>');
     $('#demo').append(parcelObj + '<br>');
     $('#demo').append('<a target="_blank" href="http://geojson.io">And paste it here: GeoJSON</a>');
