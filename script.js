@@ -14,16 +14,36 @@ $( document ).ready(function() {
   var latStart = -90.0000;
   latitudeArray.push(latStart);
 
-  //create lat array:
+  //create long array:
   while (longStart <= 180) {
-    longStart = (longStart + (interval));
+    longStart = (longStart + (interval * 2)); //multiply by 2 to make squarical
     longitudeArray.push(longStart.toFixed(4));
   }
-  //create long array:
-  while (latStart <= 90) {
+  //create array of north values:
+  var north = [];
+  var start = 0;
+  var quadraticEase = .001; //value to increment every loop run
+  while (start <= 90){
+    north.push(start);
+    start += (interval - quadraticEase);
+
+  }
+  //push last lat
+  north.push(90);
+  //create the array of south stuff, then reverse it and join it
+  var south = north.slice(1,north.length); //cut off the 0
+  //this is dumb, wish I knew array methods better
+  for (var i = 0; i < south.length; i++){
+    south[i] *= -1;
+  }
+  south.reverse();
+  latitudeArray = south.concat(north);
+  console.log(latitudeArray);
+  //create lat array:
+  /*while (latStart <= 90) {
     latStart = (latStart + interval);
     latitudeArray.push(latStart.toFixed(4));
-  }
+  }*/
 
   var userPosition = getPosition();
   function getPosition(){
