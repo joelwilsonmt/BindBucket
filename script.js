@@ -16,7 +16,7 @@ $( document ).ready(function() {
 
   //create long array:
   while (longStart <= 180) {
-    longStart = (longStart + (interval * 2)); //multiply by 2 to make squarical
+    longStart = (longStart + (interval)); //multiply by 2 to make squarical
     longitudeArray.push(longStart.toFixed(4));
   }
   //create array of north values:
@@ -66,6 +66,7 @@ $( document ).ready(function() {
   function returnParcel(position) {
     var lat = position.coords.latitude;
     var long = position.coords.longitude;
+    
     var latBounds = [];
     var longBounds = [];
     console.log(lat, long);
