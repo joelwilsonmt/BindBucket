@@ -22,10 +22,10 @@ $( document ).ready(function() {
   //create array of north values:
   var north = [];
   var start = 0;
-  var quadraticEase = .0000025; //value to increment every loop run
+  var decrementPercent = .002; //value to increment every loop run
   while (start <= 90){
     north.push(start);
-    interval -= quadraticEase;
+    interval *= (1 + decrementPercent);
     start += (interval);
     if (interval <= 0) {break;}
   }
