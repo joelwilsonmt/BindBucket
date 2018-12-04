@@ -5,7 +5,7 @@ $( document ).ready(function() {
 
 
   //create arrays of lat and longitude across world:
-  var interval = .15 //.15 degrees is about 10 miles in latitude
+  var interval = .1 //.15 degrees is about 10 miles in latitude
   var longitudeArray = [];
   var latitudeArray = [];
 
@@ -22,7 +22,7 @@ $( document ).ready(function() {
   //create array of north values:
   var north = [];
   var start = 0;
-  var decrementPercent = .001; //value to increment every loop run .02% is best...
+  var decrementPercent = .00075; //value to increment every loop run .02% is best...
   //any decrement above .1% (.001) is infinite loop here:
   while (start <= 90){
     north.push(start);
@@ -66,12 +66,17 @@ $( document ).ready(function() {
   function returnParcel(position) {
     var lat = position.coords.latitude;
     var long = position.coords.longitude;
-    
     var latBounds = [];
     var longBounds = [];
     console.log(lat, long);
     //go through and find high and low bounds, push them to lat/long bounds.
     //first value in each array is upper bound, second value is lower
+    if (latitudeArray.indexOf(lat) == true) {
+      lat += .01;
+    }
+    if (longitudeArray.indexOf(long) == true) {
+      long += .01;
+    }
     for (var i = 0; i < latitudeArray.length; i++) {
       if (latitudeArray[i] > lat){
         latBounds.push(latitudeArray[i]);
