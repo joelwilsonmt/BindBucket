@@ -6,21 +6,41 @@ $( document ).ready(function() {
 
 
   //create arrays of lat and longitude across world:
-  var interval = .15 //.15 degrees is about 10 miles in latitude
+  var interval = .1 //.15 degrees is about 10 miles in latitude
   var longitudeArray = [];
   var latitudeArray = [];
-
   var longStart = -180.0000;
   longitudeArray.push(longStart);
   var latStart = -90.0000;
   latitudeArray.push(latStart);
-
-  //create lat array:
+  //create long array:
   while (longStart <= 180) {
-    longStart = (longStart + (interval));
+    longStart = (longStart + (interval)); //multiply by 2 to make squarical
     longitudeArray.push(longStart.toFixed(4));
   }
-  //create long array:
+  //create array of north values:
+  var north = [];
+  var start = 0;
+  var decrementPercent = .00075; //value to increment every loop run .02% is best...
+  //any decrement above .1% (.001) is infinite loop here:
+  while (start <= 90){
+    north.push(start);
+    interval *= (1 - decrementPercent);
+    start += (interval);
+    if (interval <= 0) {break;}
+  }
+  //push last lat
+  north.push(90);
+  //create the array of south stuff, then reverse it and join it
+  var south = north.slice(1,north.length); //cut off the 0
+  //this is dumb, wish I knew array methods better
+  for (var i = 0; i < south.length; i++){
+    south[i] *= -1;
+  }
+  south.reverse();
+  latitudeArray = south.concat(north);
+  console.log(latitudeArray);
+  //create lat array:
   while (latStart <= 90) {
     latStart = (latStart + interval);
     latitudeArray.push(latStart.toFixed(4));
@@ -96,25 +116,16 @@ $( document ).ready(function() {
     var parcelObj = '{"type": "FeatureCollection", "features": [{"type": "Feature","properties":{},"geometry": '+polyParcel+'},{"type": "Feature","properties": {},"geometry": '+userPoint+'}]}';
     $('#demo').append('copy the next line:<br>');
     $('#demo').append(parcelObj + '<br>');
-    $('#demo').append('<a target="_blank" href="http://geojson.io">And paste it here: GeoJSON</a><br>');
-    $('#demo').append(longBounds[0]+','+latBounds[1]+','+longBounds[1]+','+latBounds[0]);
-
-
-    //now to generate POIs within a boundary box
-    /*
-    https://places.cit.api.here.com/places/v1/discover/explore
-    ?app_id={YOUR_APP_ID}
-    &app_code={YOUR_APP_CODE}
-    &at=52.50449,13.39091         use &in=longBounds[0]latBounds[0]longBounds[1]latBounds[1]
-    &pretty*/
+    $('#demo').append('<a target="_blank" href="http://geojson.io">And paste it here: GeoJSON</a>');
     console.log(longBounds[0]+','+latBounds[1]+','+longBounds[1]+','+latBounds[0]);
+
     $.ajax({
       url: 'https://places.cit.api.here.com/places/v1/discover/explore',
       type: 'GET',
       data: {
         bbox: [longBounds[0],latBounds[1],longBounds[1],latBounds[0]],//'42.3736,-71.0751,42.3472,-71.0408',
-        app_id: process.env.APP_ID,
-        app_code: process.env.APP_CODE
+        app_id: 'AZK6Ofyze1cJzt7DfyoL',
+        app_code: 'pMyoWdS4w9j1Oijt0RJC2A'
       },
       success: function (data) {
         alert(JSON.stringify(data));
